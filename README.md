@@ -7,7 +7,7 @@ A RESTful API for managing books, borrowers, and borrowing operations. Built wit
 - **Runtime:** Node.js 20
 - **Framework:** NestJS 11
 - **Language:** TypeScript 5
-- **Database:** PostgreSQL 16 with TypeORM (see [database.md](database.md) for full schema)
+- **Database:** PostgreSQL 16 with TypeORM (see [database-schema.pdf](database-schema.pdf) or [database.md](database.md) for full schema)
 - **Authentication:** HTTP Basic Auth (Passport)
 - **Validation:** class-validator / class-transformer
 - **API Docs:** Swagger (OpenAPI) at `/api/docs`
@@ -19,10 +19,10 @@ A RESTful API for managing books, borrowers, and borrowing operations. Built wit
 
 All endpoints are protected with HTTP Basic Auth.
 
-| | Default value |
-|---|---|
-| **Username** | `admin` |
-| **Password** | `secret` |
+|              | Default value |
+| ------------ | ------------- |
+| **Username** | `admin`       |
+| **Password** | `secret`      |
 
 These are configurable via `AUTH_USERNAME` and `AUTH_PASSWORD` environment variables.
 
@@ -46,33 +46,39 @@ This starts both PostgreSQL and the application, runs migrations and seeds autom
 ### Option 2: Local Development
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Youssef-K-Shebl/library-management-system.git
    cd library-management-system
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Configure environment** — copy `.env.example` and adjust as needed:
+
    ```bash
    cp .env.example .env
    ```
 
 4. **Start PostgreSQL** — either locally or via Docker:
+
    ```bash
    docker compose up postgres -d
    ```
 
 5. **Run migrations and seed data**
+
    ```bash
    npm run migration:run
    npm run seed
    ```
 
 6. **Start the application**
+
    ```bash
    # Development (watch mode)
    npm run start:dev
@@ -84,19 +90,19 @@ This starts both PostgreSQL and the application, runs migrations and seeds autom
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `NODE_ENV` | `development` | Environment mode |
-| `PORT` | `3000` | Server port |
-| `DB_HOST` | `localhost` | PostgreSQL host |
-| `DB_PORT` | `5432` | PostgreSQL port |
-| `DB_USERNAME` | `postgres` | Database user |
-| `DB_PASSWORD` | `postgres` | Database password |
-| `DB_NAME` | `library_db` | Database name |
-| `AUTH_USERNAME` | `admin` | Basic auth username |
-| `AUTH_PASSWORD` | `secret` | Basic auth password |
-| `THROTTLE_TTL` | `60` | Rate limit window (seconds) |
-| `THROTTLE_LIMIT` | `10` | Max requests per window |
+| Variable         | Default       | Description                 |
+| ---------------- | ------------- | --------------------------- |
+| `NODE_ENV`       | `development` | Environment mode            |
+| `PORT`           | `3000`        | Server port                 |
+| `DB_HOST`        | `localhost`   | PostgreSQL host             |
+| `DB_PORT`        | `5432`        | PostgreSQL port             |
+| `DB_USERNAME`    | `postgres`    | Database user               |
+| `DB_PASSWORD`    | `postgres`    | Database password           |
+| `DB_NAME`        | `library_db`  | Database name               |
+| `AUTH_USERNAME`  | `admin`       | Basic auth username         |
+| `AUTH_PASSWORD`  | `secret`      | Basic auth password         |
+| `THROTTLE_TTL`   | `60`          | Rate limit window (seconds) |
+| `THROTTLE_LIMIT` | `10`          | Max requests per window     |
 
 ## API Endpoints
 
@@ -113,6 +119,7 @@ All endpoints require Basic Auth header: `Authorization: Basic base64(username:p
 #### `POST /api/books` — Create a book
 
 **Request body:**
+
 ```json
 {
   "title": "The Great Gatsby",
@@ -124,6 +131,7 @@ All endpoints require Basic Auth header: `Authorization: Basic base64(username:p
 ```
 
 **Response `201`:**
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -145,9 +153,9 @@ All endpoints require Basic Auth header: `Authorization: Basic base64(username:p
 
 Searches by title, author, or ISBN using trigram matching.
 
-| Query Param | Type | Description |
-|---|---|---|
-| `query` | string | Search term |
+| Query Param | Type   | Description |
+| ----------- | ------ | ----------- |
+| `query`     | string | Search term |
 
 **Response `200`:** Array of matching book objects.
 
@@ -160,6 +168,7 @@ Searches by title, author, or ISBN using trigram matching.
 #### `PUT /api/books/:id` — Update a book
 
 **Request body** (all fields optional):
+
 ```json
 {
   "title": "Updated Title",
@@ -180,6 +189,7 @@ Searches by title, author, or ISBN using trigram matching.
 #### `POST /api/borrowers` — Register a borrower
 
 **Request body:**
+
 ```json
 {
   "name": "John Doe",
@@ -188,6 +198,7 @@ Searches by title, author, or ISBN using trigram matching.
 ```
 
 **Response `201`:**
+
 ```json
 {
   "id": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
@@ -214,6 +225,7 @@ Searches by title, author, or ISBN using trigram matching.
 #### `PUT /api/borrowers/:id` — Update a borrower
 
 **Request body** (all fields optional):
+
 ```json
 {
   "name": "Jane Doe",
@@ -234,6 +246,7 @@ Searches by title, author, or ISBN using trigram matching.
 #### `POST /api/borrowings/checkout` — Check out a book
 
 **Request body:**
+
 ```json
 {
   "bookId": "550e8400-e29b-41d4-a716-446655440000",
@@ -242,6 +255,7 @@ Searches by title, author, or ISBN using trigram matching.
 ```
 
 **Response `201`:**
+
 ```json
 {
   "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -256,6 +270,7 @@ Searches by title, author, or ISBN using trigram matching.
 #### `POST /api/borrowings/return` — Return a book
 
 **Request body:**
+
 ```json
 {
   "bookId": "550e8400-e29b-41d4-a716-446655440000",
@@ -275,28 +290,28 @@ Searches by title, author, or ISBN using trigram matching.
 
 #### `GET /api/reports/borrowings?from={date}&to={date}` — Borrowing report
 
-| Query Param | Type | Description |
-|---|---|---|
-| `from` | ISO date string | Start date (e.g., `2024-01-01`) |
-| `to` | ISO date string | End date (e.g., `2024-12-31`) |
+| Query Param | Type            | Description                     |
+| ----------- | --------------- | ------------------------------- |
+| `from`      | ISO date string | Start date (e.g., `2024-01-01`) |
+| `to`        | ISO date string | End date (e.g., `2024-12-31`)   |
 
 **Response `200`:** Borrowing analytics for the given date range.
 
 #### `GET /api/reports/borrowings/export?from={date}&to={date}&format={fmt}` — Export borrowings
 
-| Query Param | Type | Required | Description |
-|---|---|---|---|
-| `from` | ISO date string | Yes | Start date |
-| `to` | ISO date string | Yes | End date |
-| `format` | `csv` \| `xlsx` | No (default: `csv`) | Export format |
+| Query Param | Type            | Required            | Description   |
+| ----------- | --------------- | ------------------- | ------------- |
+| `from`      | ISO date string | Yes                 | Start date    |
+| `to`        | ISO date string | Yes                 | End date      |
+| `format`    | `csv` \| `xlsx` | No (default: `csv`) | Export format |
 
 **Response:** File download (`text/csv` or `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`).
 
 #### `GET /api/reports/overdue/export?format={fmt}` — Export overdue borrowings
 
-| Query Param | Type | Required | Description |
-|---|---|---|---|
-| `format` | `csv` \| `xlsx` | No (default: `csv`) | Export format |
+| Query Param | Type            | Required            | Description   |
+| ----------- | --------------- | ------------------- | ------------- |
+| `format`    | `csv` \| `xlsx` | No (default: `csv`) | Export format |
 
 **Response:** File download of all currently overdue borrowings.
 
